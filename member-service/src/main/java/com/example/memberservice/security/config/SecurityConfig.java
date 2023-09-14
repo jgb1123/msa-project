@@ -33,10 +33,12 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .addFilter(getAuthenticationFilter());
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/member-service").permitAll()
-//                );
+                .addFilter(getAuthenticationFilter())
+                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("/actuator/*").permitAll()
+//                        .requestMatchers("/**").permitAll()
+                        .anyRequest().permitAll()
+                );
         return httpSecurity.build();
     }
 
