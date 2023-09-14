@@ -11,7 +11,14 @@ eureka:
 spring:
   application:
     name: gateway-service
+
+  config:
+    import: optional:configserver:http://localhost:8888
+
   cloud:
+    config:
+      name: msa-project
+
     gateway:
       routes:
         - id: member-service
@@ -42,6 +49,17 @@ spring:
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
 
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/actuator/**
+            - Method=GET, POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
 
-jwt:
-  secret: 1234567890jangguenbeommsaproject1234567890
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httpexchanges
