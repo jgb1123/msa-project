@@ -9,19 +9,32 @@ import com.example.memberservice.member.mapper.MemberMapper;
 import com.example.memberservice.member.respository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class MemberService {
+public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
     private final BCryptPasswordEncoder encoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Member foundMember = getVerifiedMemberByEmail(username);
+
+        return new User(foundMember.getEmail(), foundMember.getPassword(),
+                true, true, true, true, new ArrayList<>());
+    }
 
     public MemberResponseDTO createMember(MemberPostDTO memberPostDTO) {
         Member member = memberMapper.memberPostDTOToMember(memberPostDTO);
@@ -43,4 +56,8 @@ public class MemberService {
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
+    public Member getVerifiedMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
 }

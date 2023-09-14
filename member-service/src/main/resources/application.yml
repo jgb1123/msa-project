@@ -26,3 +26,7 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
+#jwt:
+#  secret: 1234567890jangguenbeommsaproject1234567890
+#  access-token-expiration-minutes: 30
+#  refresh-token-expiration-minutes: 600
