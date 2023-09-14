@@ -12,19 +12,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/member-service")
 public class MemberController {
 
     private final MemberService memberService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createMember(@RequestBody MemberPostDTO memberPostDTO) {
+    public ResponseEntity<MemberResponseDTO> createMember(@RequestBody MemberPostDTO memberPostDTO) {
         MemberResponseDTO memberResponseDTO = memberService.createMember(memberPostDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(memberResponseDTO);
     }
 
     @GetMapping("/find/{memberId}")
-    public ResponseEntity<?> findMember(@PathVariable String memberId) {
+    public ResponseEntity<MemberResponseDTO> findMember(@PathVariable String memberId) {
         MemberResponseDTO memberResponseDTO = memberService.findMember(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDTO);
     }
