@@ -13,7 +13,7 @@ spring:
 
   cloud:
     config:
-      name: msa-project
+      name: member-service
 
   config:
     import: optional:configserver:http://localhost:8888

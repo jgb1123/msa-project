@@ -7,12 +7,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@SequenceGenerator(
+        name = "STORE_SEQ_GENERATOR",
+        sequenceName = "STORE_SEQ",
+        allocationSize = 1
+)
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Store {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STORE_SEQ_GENERATOR")
     private Long storeId;
 
     @Column

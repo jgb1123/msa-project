@@ -11,6 +11,8 @@ import com.example.storeservice.store.mapper.StoreMapper;
 import com.example.storeservice.store.repository.StoreCategoryRepository;
 import com.example.storeservice.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,9 +35,9 @@ public class StoreService {
         return storeMapper.storeToStoreResponseDTO(savedStore);
     }
 
-    public  Page<StoreResponseDTO> findStores(String categoryId, Pageable pageable) {
-        StoreCategory foundStoreCategory = getVerifiedStoreCategory(categoryId);
-        Page<Store> storePage = storeRepository.findAllByStoreCategoryStoreCategoryIdStartingWith(categoryId, pageable);
+    public  Page<StoreResponseDTO> findStores(String storeCategoryId, Pageable pageable) {
+        StoreCategory foundStoreCategory = getVerifiedStoreCategory(storeCategoryId);
+        Page<Store> storePage = storeRepository.findAllByStoreCategoryStoreCategoryIdStartingWith(foundStoreCategory.getStoreCategoryId(), pageable);
         return storePage.map(storeMapper::storeToStoreResponseDTO);
     }
 
