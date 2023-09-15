@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -18,6 +19,7 @@ import java.util.*;
 @Slf4j
 @Getter
 @Component
+@RefreshScope
 public class JwtTokenizer {
     @Value("${jwt.secret}")
     private String secretKey;
@@ -38,6 +40,7 @@ public class JwtTokenizer {
         Date refreshExpiration = getTokenExpiration(refreshTokenExpirationMinutes);
         String base64EncodedSecretKey = encodeBase64SecretKey(secretKey);
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
+        log.info(secretKey);
 
         return new Tokens(
                 Jwts.builder()
