@@ -41,8 +41,13 @@ public class StoreService {
         return storePage.map(storeMapper::storeToStoreResponseDTO);
     }
 
-    private StoreCategory getVerifiedStoreCategory(String storeCategoryId) {
+    public StoreCategory getVerifiedStoreCategory(String storeCategoryId) {
         return storeCategoryRepository.findById(storeCategoryId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.STORE_CATEGORY_NOT_FOUND));
+    }
+
+    public Store getVerifiedStore(Long storeId) {
+        return storeRepository.findById(storeId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.STORE_NOT_FOUND));
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ItemMapper {
-    public Item itemPostDtoToItem(ItemPostDTO itemPostDto) {
+    public Item itemPostDTOToItem(ItemPostDTO itemPostDto) {
         return Item.builder()
                 .itemName(itemPostDto.getItemName())
                 .price(itemPostDto.getPrice())
@@ -16,7 +16,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public ItemResponseDTO itemToItemResponseDto(Item item) {
+    public ItemResponseDTO itemToItemResponseDTO(Item item) {
         return ItemResponseDTO.builder()
                 .itemId(item.getItemId())
                 .itemName(item.getItemName())
