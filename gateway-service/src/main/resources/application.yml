@@ -39,7 +39,7 @@ spring:
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/member-service/create
+            - Path=/member-service/member/create
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
@@ -48,7 +48,7 @@ spring:
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/member-service/find/**
+            - Path=/member-service/member/find/**
             - Method=GET
           filters:
             - RemoveRequestHeader=Cookie
@@ -67,7 +67,16 @@ spring:
         - id: store-service
           uri: lb://STORE-SERVICE
           predicates:
-            - Path=/store-service/create
+            - Path=/store-service/store/create
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/store-service/(?<segment>.*), /$\{segment}
+
+        - id: store-service
+          uri: lb://STORE-SERVICE
+          predicates:
+            - Path=/store-service/item/create/**
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
