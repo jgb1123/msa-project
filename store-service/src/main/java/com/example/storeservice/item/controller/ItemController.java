@@ -45,7 +45,7 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.OK).body(new MultiResponseDTO<>(itemResponseDTOs, itemResponseDTOPage));
     }
 
-    @GetMapping("/{itemId}}")
+    @GetMapping("/{itemId}")
     public ResponseEntity<ItemResponseDTO> findItem(@PathVariable Long itemId) {
         ItemResponseDTO itemResponseDTO = itemService.findItem(itemId);
         return ResponseEntity.status(HttpStatus.OK).body(itemResponseDTO);

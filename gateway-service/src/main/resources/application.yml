@@ -82,6 +82,15 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/store-service/(?<segment>.*), /$\{segment}
 
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/order/**
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+
 management:
   endpoints:
     web:
