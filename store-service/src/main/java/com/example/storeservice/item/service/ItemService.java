@@ -28,11 +28,9 @@ public class ItemService {
     private final MemberServiceClient memberServiceClient;
 
     public ItemResponseDTO createItem(ItemPostDTO itemPostDTO, String memberId, Long storeId) {
-        MemberResponseDTO foundMemberResponseDTO = memberServiceClient.getMember(memberId);
         Store foundStore = storeService.getVerifiedStore(storeId);
-        if(!foundMemberResponseDTO.getMemberId().equals(foundStore.getOwnerMemberId())) {
-            throw new BusinessLogicException(ExceptionCode.ITEM_CANNOT_CREATE);
-        }
+        checkMemberId(memberId, foundStore);
+
         Item item = itemMapper.itemPostDTOToItem(itemPostDTO);
         item.setStore(foundStore);
         Item savedItem = itemRepository.save(item);
@@ -43,5 +41,22 @@ public class ItemService {
         Store foundStore = storeService.getVerifiedStore(storeId);
         Page<Item> itemPage = itemRepository.findAllByStore(foundStore, pageable);
         return itemPage.map(itemMapper::itemToItemResponseDTO);
+    }
+
+    public ItemResponseDTO findItem(Long itemId) {
+        Item foundItem = getVerifiedItem(itemId);
+        return itemMapper.itemToItemResponseDTO(foundItem);
+    }
+
+    private Item getVerifiedItem(Long itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
+    }
+
+    private void checkMemberId(String memberId, Store foundStore) {
+        MemberResponseDTO foundMemberResponseDTO = memberServiceClient.getMember(memberId);
+        if(!foundMemberResponseDTO.getMemberId().equals(foundStore.getOwnerMemberId())) {
+            throw new BusinessLogicException(ExceptionCode.ITEM_CANNOT_CREATE);
+        }
     }
 }

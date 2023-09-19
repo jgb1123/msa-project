@@ -32,7 +32,7 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(itemResponseDTO);
     }
 
-    @GetMapping("/{storeId}")
+    @GetMapping("/store/{storeId}")
     public ResponseEntity<MultiResponseDTO<ItemResponseDTO>> findItems(@PathVariable Long storeId,
                                                                        @PageableDefault(
                                                                                page = 1,
@@ -43,5 +43,11 @@ public class ItemController {
         Page<ItemResponseDTO> itemResponseDTOPage = itemService.findItems(storeId, pageable);
         List<ItemResponseDTO> itemResponseDTOs = itemResponseDTOPage.getContent();
         return ResponseEntity.status(HttpStatus.OK).body(new MultiResponseDTO<>(itemResponseDTOs, itemResponseDTOPage));
+    }
+
+    @GetMapping("/{itemId}}")
+    public ResponseEntity<ItemResponseDTO> findItem(@PathVariable Long itemId) {
+        ItemResponseDTO itemResponseDTO = itemService.findItem(itemId);
+        return ResponseEntity.status(HttpStatus.OK).body(itemResponseDTO);
     }
 }
