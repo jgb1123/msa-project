@@ -1,5 +1,6 @@
 package com.example.orderservice.order.controller;
 
+import com.example.orderservice.messagequeue.KafkaProducer;
 import com.example.orderservice.order.dto.OrderPostDTO;
 import com.example.orderservice.order.dto.OrderResponseDTO;
 import com.example.orderservice.order.service.OrderService;
@@ -21,6 +22,7 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> createOrder(@PathVariable String memberId,
                                                         @PathVariable Long storeId,
                                                         @RequestBody OrderPostDTO orderPostDTO) {
+
         OrderResponseDTO orderResponseDTO = orderService.createOrder(orderPostDTO, storeId, memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderResponseDTO);

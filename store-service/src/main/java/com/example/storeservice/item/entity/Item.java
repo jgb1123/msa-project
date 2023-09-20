@@ -53,4 +53,8 @@ public class Item {
             store.addItem(this);
         }
     }
+
+    public void setStockCnt(Integer itemOrderCnt) {
+        this.stockCnt -= itemOrderCnt;
+    }
 }

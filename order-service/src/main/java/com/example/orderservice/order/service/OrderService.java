@@ -3,6 +3,7 @@ package com.example.orderservice.order.service;
 
 import com.example.orderservice.client.StoreServiceClient;
 import com.example.orderservice.dto.ItemResponseDTO;
+import com.example.orderservice.messagequeue.KafkaProducer;
 import com.example.orderservice.order.dto.OrderDetailPostDTO;
 import com.example.orderservice.order.dto.OrderPostDTO;
 import com.example.orderservice.order.dto.OrderResponseDTO;
@@ -24,6 +25,7 @@ public class OrderService {
     private final OrderDetailRepository orderDetailRepository;
     private final OrderMapper orderMapper;
     private final StoreServiceClient storeServiceClient;
+    private final KafkaProducer kafkaProducer;
 
     public OrderResponseDTO createOrder(OrderPostDTO orderPostDTO, Long storeId, String memberId) {
 
@@ -44,6 +46,8 @@ public class OrderService {
             orderPrice += orderDetail.getItemPrice() * orderDetail.getItemOrderCnt();
             OrderDetail savedOrderDetail = orderDetailRepository.save(orderDetail);
             order.addOrderDetail(savedOrderDetail);
+
+            kafkaProducer.send("example-item-topic", orderDetailPostDTO);
         }
         order.setOrderPrice(orderPrice);
     }
