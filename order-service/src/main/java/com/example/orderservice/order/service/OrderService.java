@@ -14,6 +14,8 @@ import com.example.orderservice.order.repository.OrderDetailRepository;
 import com.example.orderservice.order.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +28,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final StoreServiceClient storeServiceClient;
     private final KafkaProducer kafkaProducer;
+    private final Resilience4JCircuitBreakerFactory resilience4JCircuitBreakerFactory;
 
     public OrderResponseDTO createOrder(OrderPostDTO orderPostDTO, Long storeId, String memberId) {
 
@@ -40,7 +43,15 @@ public class OrderService {
 
     private void getOrderDetailsAndSaveOrderDetail(OrderPostDTO orderPostDTO, Order order) {
         int orderPrice = 0;
+        CircuitBreaker circuitBreaker = resilience4JCircuitBreakerFactory.create("circuitBreaker");
+
         for(OrderDetailPostDTO orderDetailPostDTO : orderPostDTO.getOrderDetails()) {
+//            ItemResponseDTO itemResponseDTO = circuitBreaker.run(() -> storeServiceClient.getItem(orderDetailPostDTO.getItemId()),
+//                    throwable -> ItemResponseDTO.builder()
+//                            .itemId(1L)
+//                            .itemName("김치찌개")
+//                            .price(1000)
+//                            .build());
             ItemResponseDTO itemResponseDTO = storeServiceClient.getItem(orderDetailPostDTO.getItemId());
             OrderDetail orderDetail = orderMapper.orderDetailPostDTOToOrderDetail(orderDetailPostDTO, itemResponseDTO);
             orderPrice += orderDetail.getItemPrice() * orderDetail.getItemOrderCnt();

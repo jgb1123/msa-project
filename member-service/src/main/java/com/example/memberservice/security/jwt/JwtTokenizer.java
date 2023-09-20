@@ -24,11 +24,9 @@ public class JwtTokenizer {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Getter
     @Value("${jwt.access-token-expiration-minutes}")
     private int accessTokenExpirationMinutes;
 
-    @Getter
     @Value("${jwt.refresh-token-expiration-minutes}")
     private int refreshTokenExpirationMinutes;
 
