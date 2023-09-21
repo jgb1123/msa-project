@@ -67,8 +67,8 @@ spring:
         - id: store-service
           uri: lb://STORE-SERVICE
           predicates:
-            - Path=/store-service/store/create
-            - Method=POST
+            - Path=/store-service/store/**
+            - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/store-service/(?<segment>.*), /$\{segment}
@@ -76,8 +76,17 @@ spring:
         - id: store-service
           uri: lb://STORE-SERVICE
           predicates:
-            - Path=/store-service/item/create/**
-            - Method=POST
+            - Path=/store-service/item/**
+            - Method=GET, POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/store-service/(?<segment>.*), /$\{segment}\
+
+        - id: store-service
+          uri: lb://STORE-SERVICE
+          predicates:
+            - Path=/store-service/actuator/**
+            - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/store-service/(?<segment>.*), /$\{segment}
@@ -86,13 +95,23 @@ spring:
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/order/**
-            - Method=POST
+            - Method=GET, POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/actuator/**
+            - Method=GET, POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+
 
 management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, httpexchanges, busrefresh
+        include: refresh, health, beans, httpexchanges, busrefresh, info, metrics, prometheus
